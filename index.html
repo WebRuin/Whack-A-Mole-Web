@@ -12,18 +12,25 @@
 			whackAMole.difficultyFactor = .25; // score to decriment per ms
 			whackAMole.loopSpeed = 200;
 			whackAMole.buttons;
+			window.localStorage.setItem( 'com_smithdesign_wam_topScore', 0);
+			
+			$( document ).ready(function() {
+			    $('#topScore').text("Top Score " + window.localStorage.getItem( 'com_smithdesign_wam_topScore' ));
+            });
 			
 			//timer
 			whackAMole.gameLoop = function(){
 			   if (whackAMole.currentScore <= 0){
 			   		$('#defaultCountdown').text('Time is up');
-			 		$(".active").removeClass("active");
+			 		$(".glow").removeClass('glow');
 			 		whackAMole.currentScore = 0;
+			 		window.localStorage.setItem( 'com_smithdesign_wam_topScore', whackAMole.successfulHits);
+			 	    $('#topScore').text("Top Score " + window.localStorage.getItem( 'com_smithdesign_wam_topScore' ));
 			   }
 			   else {
-					if($(".active").length == 0){
+					if($(".glow").length == 0){
 						whackAMole.randomnumber=Math.floor(Math.random()*buttons.length);
-						$(buttons[whackAMole.randomnumber]).addClass('active');
+						$(buttons[whackAMole.randomnumber]).addClass('glow');
 						if(newMole) {
 							newMole.play();
 						}
@@ -39,19 +46,20 @@
 			 whackAMole.updateUI = function() {
 			 	$('#defaultCountdown').text(whackAMole.currentScore);
 			 	$('#defaultScore').text(whackAMole.successfulHits);
+			 	$('#reset').click( function () {
+			 	    window.localStorage.setItem( 'com_smithdesign_wam_topScore', 0);
+                });
 			 }
 			
 			 //Score
 			  $(function () {
-			 	  buttons = $(".container .button").toArray();
-			 	  //$('.container.').bind('selectstart', function(){return false;});
+			 	  buttons = $(".container .box").toArray();
 			 	  
-			      $('.container	.button').click(function () {
-			 		if($(this).hasClass("active")){
-						$(this).removeClass('active');
+			      $('.container	.box').click(function () {
+			 		if($(this).hasClass('glow')){
+						$(this).removeClass('glow');
 						whackAMole.successfulHits ++;
 						if(whack){
-							//whack.stop();
 							whack.play();
 						}
 					}
@@ -59,33 +67,33 @@
 			      });
 			  });
 			 
-			 var t = setTimeout(whackAMole.gameLoop,whackAMole.loopSpeed)
+			 var t = setTimeout(whackAMole.gameLoop,whackAMole.loopSpeed);
+			 
+             $('#reset').click( function () {
+                window.localStorage.setItem( 'com_smithdesign_wam_topScore', 0);
+             });
 		</script>
 	</head>
 	<body>
 		<center>
 		<h1>Whack-A-Mole</h1>
 		<div class="stats">
-			<div id="defaultCountdown">Time</div>
 			<div id="defaultScore">Score</div>
+			<div id="defaultCountdown">Time</div>
+			<div id="topScore"></div>
+			<div id="reset">Reset</div>
 		</div>
-		<div class="all">
-			<div class="container">
-				<div class="button red">@</div>
-				<div class="button purple">@</div>
-				<div class="button green">@</div>
-			</div>
-			<div class="container">
-				<div class="button red">@</div>
-				<div class="button purple">@</div>
-				<div class="button green">@</div>
-			</div>
-			<div class="container">
-				<div class="button red">@</div>
-				<div class="button purple">@</div>
-				<div class="button green">@</div>
-			</div>
-		</div>
+        <div class="container">
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+            <div class="box"></div>
+        </div>
 		<!-- Sounds -->
 		<audio id="whack" preload="auto" src="sounds/whack.mp3">
 		</audio>
